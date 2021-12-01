@@ -1,12 +1,11 @@
+using IterTools
+
 # read all lines into a vector
-all_readings = map(l -> parse(Int64, l), readlines("input_ex.txt"))
+all_readings = map(l -> parse(Int64, l), readlines("input.txt"))
 
-windows = zeros(length(all_readings)-2)
-for i in 1:(length(windows))
-    windows[i] = all_readings[i] + all_readings[i+1] + all_readings[i+2]
-end
-
-println(windows)
+# mmm lovely partitioning with steps
+windows = partition(all_readings, 3, 1)
+windows = [sum(w) for w in windows]
 
 # zip with itself, offset by one
 # creates a list of tuples of (reading, previous_reading)
@@ -17,3 +16,4 @@ increases = filter(p -> p[1] > p[2], collect(pairs))
 
 # print the length of the increases
 println(length(increases))
+
