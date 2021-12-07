@@ -70,21 +70,30 @@ end
 function play_game(lines::Vector{String})
     numbers, boards = parse_input(lines)
 
+    already_won = Set([])
+
     for num in numbers
         println("Calling ", num)
         boards = map(b -> write_number(b, num), boards)
         display(reduce(hcat, boards))
         println()
 
-        for b in boards
+        for b_idx in 1:length(boards)
+            b = boards[b_idx]
             if check_win(b)
-                println("Win detected!")
-                display(b)
-                println()
+                push!(already_won, b_idx)
 
-                @printf("Remaining sum: %d\n", sum_unmarked(b))
-                @printf("Final score: %d\n", sum_unmarked(b) * num )
-                return
+                if length(already_won) == length(boards)
+                    println("Win detected!")
+                    display(b)
+                    println()
+
+                    @printf("Last board standing: %d\n", b_idx)
+                    @printf("Remaining sum: %d\n", sum_unmarked(b))
+                    @printf("Final score: %d\n", sum_unmarked(b) * num )
+                
+                    return
+                end
             end
         end
     end
